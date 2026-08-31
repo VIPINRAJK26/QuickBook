@@ -16,7 +16,7 @@ class RegisterView(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = AccountService.register_user(
-            serializer.validated_data
+            **serializer.validated_data
         )
 
         return Response(
@@ -85,4 +85,4 @@ class LogoutView(APIView):
         return Response(
             {"message": "Logout successful. Refresh token has been blacklisted."},
             status=status.HTTP_200_OK,
-        )
+        )
