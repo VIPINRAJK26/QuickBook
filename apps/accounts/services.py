@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from django.db import transaction
@@ -24,7 +25,9 @@ class AccountService:
             ).first()
 
             if referrer is None:
-                raise ValueError("Invalid referral code.")
+                raise ValidationError(
+                    {"referral_code": "Invalid referral code."}
+                )
 
         # Create the user using Django's password hashing.
         user = User.objects.create_user(
