@@ -80,3 +80,24 @@ class LoginSerializer(serializers.Serializer):
         attrs["user"] = user
 
         return attrs
+
+# user serializer
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "referral_code",
+        ]
+        read_only_fields = fields
+
+
+# logout serializer
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField(
+        help_text="The refresh token to blacklist.",
+    )
