@@ -120,6 +120,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+    "DEFAULT_PAGINATION_CLASS": (
+        "config.pagination.StandardResultsSetPagination"
+    ),
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -130,9 +133,10 @@ AUTHENTICATION_BACKENDS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = "en-us"
+
+TIME_ZONE = "Asia/Kolkata"
 
 USE_I18N = True
 
