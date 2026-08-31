@@ -49,24 +49,24 @@ class RegisterSerializer(serializers.Serializer):
 # login serializer
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    email = serializers.EmailField()
     password = serializers.CharField(
         write_only=True,
     )
 
     def validate(self, attrs):
-        username = attrs.get("username")
+        email = attrs.get("email")
         password = attrs.get("password")
 
         user = authenticate(
-            username=username,
+            email=email,
             password=password,
         )
 
         if not user:
             raise serializers.ValidationError(
                 {
-                    "detail": "Invalid username or password."
+                    "detail": "Invalid email or password."
                 }
             )
 
