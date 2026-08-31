@@ -1,3 +1,50 @@
-from django.shortcuts import render
+from rest_framework import generics,status
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
-# Create your views here.
+from .filters import EventFilter
+from .models import Event
+from .serializers import EventSerializer
+from .permissions import IsStaffUser
+from .services import EventService
+
+
+
+class EventCreateView(generics.GenericAPIView):
+    serializer_class = EventSerializer
+    permission_classes = [IsStaffUser]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        event = EventService.create_event(
+            **serializer.validated_data
+        )
+
+        return Response(
+            {
+                "message": "Event created successfully.",
+                "event": EventSerializer(event).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class EventListView(generics.ListAPIView):
+    serializer_class = EventSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        queryset = Event.objects.all()
+
+        return EventFilter.filter_queryset(
+            queryset=queryset,
+            params=self.request.query_params,
+        )
+
+
+class EventDetailView(generics.RetrieveAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [AllowAny]
