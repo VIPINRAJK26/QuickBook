@@ -4,6 +4,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 from django.contrib.auth import get_user_model
 
@@ -27,6 +28,7 @@ User = get_user_model()
 class DashboardStatsView(APIView):
     permission_classes = [IsAdminUser]
 
+    @extend_schema(responses={200: dict})
     def get(self, request):
         data = {
             "total_customers": User.objects.filter(
@@ -81,6 +83,7 @@ class DashboardUserReferralTreeView(APIView):
     """
     permission_classes = [IsAdminUser]
 
+    @extend_schema(responses={200: dict, 404: dict})
     def get(self, request, pk):
         # Ensure the target user is a customer (is_staff=False).
         if not User.objects.filter(pk=pk, is_staff=False).exists():
@@ -135,7 +138,7 @@ class DashboardVendorUpdateView(generics.UpdateAPIView):
 
     def perform_update(self, serializer):
         VendorService.update_vendor(
-            vendor=self.get_object(),
+            vendor=serializer.instance,
             **serializer.validated_data,
         )
 
