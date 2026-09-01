@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     "apps.referrals",
     "apps.events",
     "apps.bookings",
+    "apps.vendors",
     "apps.dashboard",
+
 ]
 
 

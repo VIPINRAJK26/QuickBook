@@ -23,6 +23,7 @@ urlpatterns = [
     path("api/referrals/", include("apps.referrals.urls")),
     path("api/events/", include("apps.events.urls")),
     path("api/bookings/", include("apps.bookings.urls")),
+    path("api/vendors/", include("apps.vendors.urls")),
     # path("api/dashboard/", include("apps.dashboard.urls")),
     
 ]
