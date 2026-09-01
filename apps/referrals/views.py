@@ -3,7 +3,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
+from .permissions import IsOwnerOrAdmin
 from .serializers import (
     ReferralRootSerializer,
     ReferralStatsSerializer,
@@ -13,8 +15,9 @@ from .models import ReferralNode
 
 class ReferralTreeView(APIView):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
 
+    @extend_schema(responses={200: dict, 404: dict})
     def get(self, request, user_id):
         try:
             root_node, children_map = ReferralService.get_tree(
@@ -32,8 +35,9 @@ class ReferralTreeView(APIView):
 
 
 class ReferralRootView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
 
+    @extend_schema(responses={200: ReferralRootSerializer, 404: dict})
     def get(self, request, user_id):
         try:
             root_node = ReferralService.get_root(user_id=user_id)
@@ -50,8 +54,9 @@ class ReferralRootView(APIView):
 
 class ReferralStatsView(APIView):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
 
+    @extend_schema(responses={200: ReferralStatsSerializer, 404: dict})
     def get(self, request, user_id):
         try:
             stats = ReferralService.get_team_stats(

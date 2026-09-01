@@ -1,6 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 
 from .exceptions import (
     BookingAlreadyCancelledError,
@@ -10,6 +11,7 @@ from .exceptions import (
 from .models import Booking
 from .serializers import BookingCreateSerializer, BookingSerializer
 from .services import BookingService
+from .throttles import BookingRateThrottle
 
 
 class BookingListCreateView(generics.ListAPIView):
@@ -25,6 +27,7 @@ class BookingListCreateView(generics.ListAPIView):
 
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [BookingRateThrottle]
 
     def get_queryset(self):
         return (
@@ -34,6 +37,7 @@ class BookingListCreateView(generics.ListAPIView):
             .order_by("-created_at")
         )
 
+    @extend_schema(request=BookingCreateSerializer, responses={201: BookingSerializer, 400: dict})
     def post(self, request):
         serializer = BookingCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -72,6 +76,7 @@ class BookingCancelView(generics.GenericAPIView):
 
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(request=None, responses={200: BookingSerializer, 400: dict, 403: dict, 404: dict})
     def post(self, request, pk):
         try:
             booking = BookingService.cancel_booking(

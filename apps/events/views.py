@@ -79,10 +79,13 @@ class EventUpdateView(generics.GenericAPIView):
         )
 
 
+from drf_spectacular.utils import extend_schema
+
 class EventDeleteView(generics.GenericAPIView):
     permission_classes = [IsStaffUser]
     queryset = Event.objects.all()
 
+    @extend_schema(responses={200: dict})
     def delete(self, request, pk):
         event = self.get_object()
         event.delete()

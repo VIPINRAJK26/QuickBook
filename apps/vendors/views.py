@@ -26,6 +26,6 @@ class VendorUpdateView(generics.UpdateAPIView):
 
     def perform_update(self, serializer):
         VendorService.update_vendor(
-            vendor=self.get_object(),
+            vendor=serializer.instance,
             **serializer.validated_data,
         )
