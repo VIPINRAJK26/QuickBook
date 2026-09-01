@@ -7,10 +7,11 @@ from rest_framework.permissions import IsAuthenticated
 
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, LogoutSerializer
 from .services import AccountService
+from .throttles import RegisterRateThrottle,LoginRateThrottle
 
 
 class RegisterView(APIView):
-
+    throttle_classes = [RegisterRateThrottle]
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -34,7 +35,7 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
-
+    throttle_classes = [LoginRateThrottle]
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
